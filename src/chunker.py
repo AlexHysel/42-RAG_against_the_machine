@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, FilePath
 import re
 from delimiter_config import DelimiterConfig
 from chunk import Chunk
@@ -10,17 +10,19 @@ overlap_size = 200
 class Chunker(BaseModel):
     delimiter_config: DelimiterConfig
 
-    def ChunkFile(self, file_path: str) -> list[Chunk]:
+    def ChunkFile(self, file_path: FilePath) -> list[Chunk]:
         delimiters = self.delimiter_config.get_delimiters_for(file_path)
         with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
-        return self.Chunk(content, delimiters)
+        chunks = self.Chunk(content, delimiters)
+        for chunk in chunks: chunk.file_path = file_path
+        return chunks
 
     def Chunk(self, text: str,
               delimiters: set[str],
               offset: int = 0,
               ) -> list[Chunk]:
         if len(text) < chunk_size:
-            return [Chunk(offset, offset + len(text), text)]
+            return [Chunk.create(offset, text)]
         else:
             return self.Chunk()

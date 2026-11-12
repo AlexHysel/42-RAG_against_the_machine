@@ -7,6 +7,13 @@ class Chunk(BaseModel):
     content: str = Field(min_length=1)
     file_path: FilePath | None = None
 
+    @classmethod
+    def create(offset: int,
+            content: str,
+            file_path: None | FilePath = None
+            ) -> Chunk:
+        return Chunk(start=offset, end=len(content)+offset, content=content, file_path=file_path)
+
     @model_validator(mode="after")
     def check_start_and_end(self) -> "Chunk":
         if self.end < self.start:
