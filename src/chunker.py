@@ -19,7 +19,7 @@ class Chunker(BaseModel):
         return chunks
 
     def Chunk(self, text: str,
-              delimiters: set[str],
+              delimiters: tuple[str],
               offset: int = 0,
               ) -> list[Chunk]:
         if len(text) < chunk_size:

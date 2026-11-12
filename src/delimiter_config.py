@@ -4,11 +4,11 @@ from pydantic import BaseModel, PrivateAttr, FilePath
 
 
 class DelimiterConfig(BaseModel):
-    _delimiters: dict[re.Pattern[str], list[str]] = PrivateAttr()
+    _delimiters: dict[re.Pattern[str], tuple[str]] = PrivateAttr()
 
-    def __init__(self, delimiters: dict[str, list[str]]):
+    def __init__(self, delimiters: dict[str, tuple[str]]):
         super().__init__()
-        self._delimiters = {re.compile(k): v for k, v in delimiters.items()}
+        self._delimiters = {re.compile(k): tuple(v) for k, v in delimiters.items()}
 
     @classmethod
     def from_file(file_path: FilePath) -> DelimiterConfig:
@@ -16,7 +16,7 @@ class DelimiterConfig(BaseModel):
             data = json.load(file)
         return DelimiterConfig(data)
 
-    def get_delimiters_for(self, file_name: str) -> list[str] | None:
+    def get_delimiters_for(self, file_name: str) -> tuple[str] | None:
         """Returns a set of delimiters for file_name."""
 
         file_name = file_name.split("/")[-1]
