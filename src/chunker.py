@@ -26,10 +26,38 @@ class Chunker(BaseModel):
         if len(text) < chunk_size:
             return [Chunk.create(offset, text)]
             
+        parts = []
+        if len(delimiters) > 0:
+            parts = self._splitWithOverlap(text, delimiters[0])
+        else:
+            parts = self._splitBySize(text)
+
         chunks = []
-        for part, part_offset in self._splitWithOverlap(text, delimiters[0]):
+        for part, part_offset in parts:
             chunks.extend(self.Chunk(part, delimiters[1:], offset + part_offset))
         return chunks
+
+    def _splitBySize(self, text: str) -> list[tuple[str, int]]:
+        parts = []
+        start = 0
+
+        while start < len(text):
+            end = min(start + chunk_size, len(text))
+
+            if end < len(text):
+                split_at = text.rfind(" ", start, end)
+
+                if split_at > start:
+                    end = split_at + 1
+
+            parts.append((text[start:end], start))
+
+            if end >= len(text):
+                break
+
+            start = max(start + 1, end - overlap_size)
+
+        return parts
 
     def _splitWithOverlap(self,
                           text: str,
