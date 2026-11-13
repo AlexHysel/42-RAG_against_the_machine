@@ -22,7 +22,7 @@ class Chunker(BaseModel):
               delimiters: tuple[str],
               offset: int = 0,
               ) -> list[Chunk]:
-        if len(text) < self.chunk_size:
+        if len(text) <= self.chunk_size:
             return [Chunk.create(offset, text)]
             
         parts = []
