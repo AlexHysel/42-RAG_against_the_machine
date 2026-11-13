@@ -10,6 +10,8 @@ class Chunker(BaseModel):
     overlap_size: int = 200
 
     def ChunkFile(self, file_path: FilePath) -> list[Chunk]:
+        """Chunk content of the file."""
+
         delimiters = self.delimiter_config.get_delimiters_for(file_path)
         with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
@@ -22,6 +24,8 @@ class Chunker(BaseModel):
               delimiters: tuple[str],
               offset: int = 0,
               ) -> list[Chunk]:
+        """Chunk text."""
+
         if len(text) <= self.chunk_size:
             return [Chunk.create(offset, text)]
             
@@ -37,6 +41,10 @@ class Chunker(BaseModel):
         return chunks
 
     def _splitBySize(self, text: str) -> list[tuple[str, int]]:
+        """
+        Splits text based on size.
+        Used when splitting by delimiters was not enough.
+        """
         parts = []
         start = 0
 
@@ -62,7 +70,10 @@ class Chunker(BaseModel):
                           text: str,
                           delimiter: str
                           ) -> list[tuple[str, int]]:
-        """Returns a list of tuples with text and offset."""
+        """
+        Returns a list of tuples with text and offset.
+        Parts overlap with the previous ones.
+        """
 
         indices = [m.start() for m in re.finditer(re.escape(delimiter), text)]
         indices = [0] + indices + [len(text)]

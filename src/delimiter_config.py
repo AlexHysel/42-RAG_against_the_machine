@@ -12,6 +12,7 @@ class DelimiterConfig(BaseModel):
 
     @classmethod
     def from_file(cls, file_path: FilePath) -> DelimiterConfig:
+        """Create DelimiterConfig from config json file."""
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
         return DelimiterConfig(data)

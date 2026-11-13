@@ -12,6 +12,8 @@ class Chunk(BaseModel):
             content: str,
             file_path: None | FilePath = None
             ) -> Chunk:
+        """Creates a Chunk instance."""
+
         return Chunk(start=offset, end=len(content)+offset, content=content, file_path=file_path)
 
     @model_validator(mode="after")
