@@ -4,11 +4,10 @@ from delimiter_config import DelimiterConfig
 from chunk import Chunk
 
 
-chunk_size = 2000
-overlap_size = 200
-
 class Chunker(BaseModel):
     delimiter_config: DelimiterConfig
+    chunk_size = 2000
+    overlap_size = 200
 
     def ChunkFile(self, file_path: FilePath) -> list[Chunk]:
         delimiters = self.delimiter_config.get_delimiters_for(file_path)
@@ -23,7 +22,7 @@ class Chunker(BaseModel):
               delimiters: tuple[str],
               offset: int = 0,
               ) -> list[Chunk]:
-        if len(text) < chunk_size:
+        if len(text) < self.chunk_size:
             return [Chunk.create(offset, text)]
             
         parts = []
@@ -42,7 +41,7 @@ class Chunker(BaseModel):
         start = 0
 
         while start < len(text):
-            end = min(start + chunk_size, len(text))
+            end = min(start + self.chunk_size, len(text))
 
             if end < len(text):
                 split_at = text.rfind(" ", start, end)
@@ -55,7 +54,7 @@ class Chunker(BaseModel):
             if end >= len(text):
                 break
 
-            start = max(start + 1, end - overlap_size)
+            start = max(start + 1, end - self.overlap_size)
 
         return parts
 
@@ -70,7 +69,7 @@ class Chunker(BaseModel):
 
         parts = []
         for i in range(len(indices) - 1):
-            start = max(0, indices[i] - overlap_size)
+            start = max(0, indices[i] - self.overlap_size)
             end = indices[i + 1]
             part = text[start:end]
             if part:
