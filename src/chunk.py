@@ -8,7 +8,7 @@ class Chunk(BaseModel):
     file_path: FilePath | None = None
 
     @classmethod
-    def create(offset: int,
+    def create(cls, offset: int,
             content: str,
             file_path: None | FilePath = None
             ) -> Chunk:

@@ -6,8 +6,8 @@ from chunk import Chunk
 
 class Chunker(BaseModel):
     delimiter_config: DelimiterConfig
-    chunk_size = 2000
-    overlap_size = 200
+    chunk_size: int = 2000
+    overlap_size: int = 200
 
     def ChunkFile(self, file_path: FilePath) -> list[Chunk]:
         delimiters = self.delimiter_config.get_delimiters_for(file_path)

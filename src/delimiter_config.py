@@ -11,7 +11,7 @@ class DelimiterConfig(BaseModel):
         self._delimiters = {re.compile(k): tuple(v) for k, v in delimiters.items()}
 
     @classmethod
-    def from_file(file_path: FilePath) -> DelimiterConfig:
+    def from_file(cls, file_path: FilePath) -> DelimiterConfig:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
         return DelimiterConfig(data)
