@@ -1,8 +1,10 @@
 [project]
 name = "42-rag-against-the-machine"
+version = "1.0"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "fire>=0.7.1",
     "pydantic>=2.14.3",
     "pytest>=9.2.0",
 ]
