@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, model_validator, FilePath
 class Chunk(BaseModel):
     start: int = Field(ge=0)
     end: int = Field(ge=0)
-    content: str = Field(min_length=1)
+    content: str = Field(min_length=1, max_length=2000)
     file_path: FilePath | None = None
 
     @classmethod
