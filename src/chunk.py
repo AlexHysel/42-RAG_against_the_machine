@@ -11,13 +11,13 @@ class Chunk(BaseModel):
     def create(cls, offset: int,
             content: str,
             file_path: None | FilePath = None
-            ) -> Chunk:
+            ) -> 'Chunk':
         """Creates a Chunk instance."""
 
         return Chunk(start=offset, end=len(content)+offset, content=content, file_path=file_path)
 
     @model_validator(mode="after")
-    def check_start_and_end(self) -> "Chunk":
+    def check_start_and_end(self) -> 'Chunk':
         if self.end < self.start:
-            raise ValueError("end must be greater than or equal to start")
+            raise ValueError('end must be greater than or equal to start')
         return self
