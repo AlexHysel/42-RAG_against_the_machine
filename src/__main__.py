@@ -31,7 +31,7 @@ def index(
     delimiter_config = DelimiterConfig.from_file("src/delimiters.json")
 
     files = get_all_files(source_directory, delimiter_config)
-    print(f"Found {len(files)} files")
+    print(f"Found {len(files)} matching files")
 
     chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
     chunks = [chunker.ChunkFile(file) for file in files]
