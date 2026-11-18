@@ -1,6 +1,10 @@
 from pathlib import Path
 import fire
 
+from .chunker import Chunker
+from .chunk import Chunk
+from .delimiter_config import DelimiterConfig
+
 
 def get_all_files(directory: Path) -> list[Path]:
     """Recursively find all files in a directory."""
@@ -27,7 +31,8 @@ def index(
 
     print(f"Found {len(files)} files")
 
-    # TODO: Initialize Chunker
+    delimiter_config = DelimiterConfig.from_file("src/delimiters.json")
+    chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
     # TODO: Chunk all supported files
     # TODO: Build BM25 index
     # TODO: Save index to output_directory

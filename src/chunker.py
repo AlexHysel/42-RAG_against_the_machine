@@ -1,7 +1,8 @@
 from pydantic import BaseModel, FilePath
 import re
-from delimiter_config import DelimiterConfig
-from chunk import Chunk
+
+from .delimiter_config import DelimiterConfig
+from .chunk import Chunk
 
 
 class Chunker(BaseModel):
