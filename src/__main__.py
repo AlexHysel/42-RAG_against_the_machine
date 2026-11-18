@@ -1,17 +1,18 @@
 from pathlib import Path
 import fire
+import re
 
 from .chunker import Chunker
 from .chunk import Chunk
 from .delimiter_config import DelimiterConfig
 
 
-def get_all_files(directory: Path) -> list[Path]:
+def get_all_files(directory: Path, delimiter_config: DelimiterConfig) -> list[Path]:
     """Recursively find all files in a directory."""
     return [
         path
         for path in directory.rglob("*")
-        if path.is_file()
+        if path.is_file() and delimiter_config.supports(path)
     ]
 
 
@@ -27,13 +28,14 @@ def index(
     if not source_directory.is_dir():
         raise ValueError(f"Dataset directory does not exist: {source_directory}")
 
-    files = get_all_files(source_directory)
+    delimiter_config = DelimiterConfig.from_file("src/delimiters.json")
 
+    files = get_all_files(source_directory, delimiter_config)
     print(f"Found {len(files)} files")
 
-    delimiter_config = DelimiterConfig.from_file("src/delimiters.json")
     chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
-    # TODO: Chunk all supported files
+    chunks = [chunker.ChunkFile(file) for file in files]
+
     # TODO: Build BM25 index
     # TODO: Save index to output_directory
 

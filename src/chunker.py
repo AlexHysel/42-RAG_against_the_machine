@@ -1,5 +1,6 @@
-from pydantic import BaseModel, FilePath
+from pydantic import BaseModel
 import re
+from pathlib import Path
 
 from .delimiter_config import DelimiterConfig
 from .chunk import Chunk
@@ -10,7 +11,7 @@ class Chunker(BaseModel):
     chunk_size: int = 2000
     overlap_size: int = 200
 
-    def ChunkFile(self, file_path: FilePath) -> list[Chunk]:
+    def ChunkFile(self, file_path: Path) -> list[Chunk]:
         """Chunk content of the file."""
 
         delimiters = self.delimiter_config.get_delimiters_for(file_path)
@@ -26,6 +27,8 @@ class Chunker(BaseModel):
               offset: int = 0,
               ) -> list[Chunk]:
         """Chunk text."""
+
+        if not text: return []
 
         if len(text) <= self.chunk_size:
             return [Chunk.create(offset, text)]
