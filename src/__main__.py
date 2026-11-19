@@ -37,6 +37,9 @@ def index(
     chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
     chunks = [chunker.ChunkFile(file) for file in files]
 
+    tokenizer = Tokenizer()
+    chunksTokens = [tokenizer.tokenize(c.content) for c in chunks]
+
     # TODO: Build BM25 index
     # TODO: Save index to output_directory
 
