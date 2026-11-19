@@ -5,6 +5,7 @@ import re
 from .chunker import Chunker
 from .chunk import Chunk
 from .delimiter_config import DelimiterConfig
+from .tokenizer import Tokenizer
 
 
 def get_all_files(directory: Path, delimiter_config: DelimiterConfig) -> list[Path]:
