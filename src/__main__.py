@@ -1,6 +1,6 @@
 from pathlib import Path
 import fire
-import re
+from rank_bm25 import BM25Okapi
 
 from .chunker import Chunker
 from .chunk import Chunk
@@ -43,6 +43,8 @@ def index(
 
     tokenizer = Tokenizer()
     chunksTokens = [tokenizer.tokenize(c.content) for c in chunks]
+
+    statistics = BM25Okapi(chunksTokens)
 
     # TODO: Build BM25 index
     # TODO: Save index to output_directory
