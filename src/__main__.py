@@ -35,7 +35,11 @@ def index(
     print(f"Found {len(files)} matching files")
 
     chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
-    chunks = [chunker.ChunkFile(file) for file in files]
+    chunks = [
+        chunk
+        for file in files
+        for chunk in chunker.ChunkFile(file)
+    ]
 
     tokenizer = Tokenizer()
     chunksTokens = [tokenizer.tokenize(c.content) for c in chunks]
