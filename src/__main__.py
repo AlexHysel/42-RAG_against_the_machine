@@ -1,5 +1,6 @@
 from pathlib import Path
 import fire
+import pickle
 from rank_bm25 import BM25Okapi
 
 from .chunker import Chunker
@@ -46,8 +47,15 @@ def index(
 
     statistics = BM25Okapi(chunksTokens)
 
-    # TODO: Build BM25 index
-    # TODO: Save index to output_directory
+    output_directory.mkdir(parents=True, exist_ok=True)
+
+    with open(output_directory / "index.pkl", "wb") as f:
+        pickle.dump({
+            "bm25": statistics,
+            "chunks": chunks,
+        }, f)
+
+    print("Index file saved to:" + output_directory + "/index.pkl")
 
 
 def search(query: str, k: int = 10):
