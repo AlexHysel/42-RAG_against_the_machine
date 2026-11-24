@@ -1,6 +1,7 @@
 from pathlib import Path
 import fire
 import pickle
+import time
 from rank_bm25 import BM25Okapi
 
 from .chunker import Chunker
@@ -35,20 +36,47 @@ def index(
     files = get_all_files(source_directory, delimiter_config)
     print(f"Found {len(files)} matching files")
 
+    # === CHUNKING ===
+
     chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
+
+    start = time.perf_counter()    
+    print("Chunking...")
+
     chunks = [
         chunk
         for file in files
         for chunk in chunker.ChunkFile(file)
     ]
-    print(f"Chunking finished with {len(chunks)} Chunks.")
+
+    end = time.perf_counter()
+    print(f"Chunking finished with {len(chunks)} Chunks. ({end - start:.4f} sec.)")
+
+    # === TOKENIZATION ===
+
+    start = time.perf_counter()    
+    print("Tokenization...")
 
     tokenizer = Tokenizer()
     chunksTokens = [tokenizer.tokenize(c.content) for c in chunks]
-    print("Chunks Tokenized.")
+
+    end = time.perf_counter()
+    print(f"Chunks Tokenized ({end - start:.4f} sec.)")
+
+    # === BM50 ===
+
+    start = time.perf_counter()    
+    print("Calculating BM25 statistics...")
 
     statistics = BM25Okapi(chunksTokens)
-    print("BM50 statistics calculated.")
+
+    end = time.perf_counter()
+    print(f"BM25 statistics calculated. ({end - start:.4f} sec.)")
+
+    # === SAVING ===
+    
+    start = time.perf_counter()    
+    print("Saving Index file...")
 
     output_directory.mkdir(parents=True, exist_ok=True)
 
@@ -58,7 +86,8 @@ def index(
             "chunks": chunks,
         }, f)
 
-    print("Index file saved to:" / output_directory / "/index.pkl")
+    end = time.perf_counter()
+    print("Index file saved to:" / output_directory / f"/index.pkl ({end - start:.4f} sec.)")
 
 
 def search(query: str, k: int = 10):
