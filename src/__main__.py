@@ -41,11 +41,14 @@ def index(
         for file in files
         for chunk in chunker.ChunkFile(file)
     ]
+    print(f"Chunking finished with {len(chunks)} Chunks.")
 
     tokenizer = Tokenizer()
     chunksTokens = [tokenizer.tokenize(c.content) for c in chunks]
+    print("Chunks Tokenized.")
 
     statistics = BM25Okapi(chunksTokens)
+    print("BM50 statistics calculated.")
 
     output_directory.mkdir(parents=True, exist_ok=True)
 
@@ -55,7 +58,7 @@ def index(
             "chunks": chunks,
         }, f)
 
-    print("Index file saved to:" + output_directory + "/index.pkl")
+    print("Index file saved to:" / output_directory / "/index.pkl")
 
 
 def search(query: str, k: int = 10):
