@@ -86,7 +86,7 @@ class Chunker(BaseModel):
         for i in range(len(indices) - 1):
             start = indices[i]
             end = indices[i + 1]
-            chars_free = self.chunk_size - end + start
+            chars_free = max(self.chunk_size - end + start, 0)
             overlap_start = max(0, start - min(self.overlap_size, chars_free))
             part = text[start:end]
             if part:
