@@ -41,7 +41,7 @@ def index(
     chunker = Chunker(delimiter_config=delimiter_config, chunk_size=2000, overlap_size=200)
 
     start = time.perf_counter()    
-    print("Chunking...")
+    print("\nCHUNKING...")
 
     chunks = [
         chunk
@@ -50,12 +50,16 @@ def index(
     ]
 
     end = time.perf_counter()
+    lengths = [len(chunk.content) for chunk in chunks]
     print(f"Chunking finished with {len(chunks)} Chunks. ({end - start:.4f} sec.)")
+    print(f"Average chunk length: {sum(lengths) / len(lengths):.2f}")
+    print(f"Min chunk length: {min(lengths)}")
+    print(f"Max chunk length: {max(lengths)}")
 
     # === TOKENIZATION ===
 
     start = time.perf_counter()    
-    print("Tokenization...")
+    print("\nTOKENIZATION...")
 
     tokenizer = Tokenizer()
     chunksTokens = [tokenizer.tokenize(c.content) for c in chunks]
@@ -66,7 +70,7 @@ def index(
     # === BM50 ===
 
     start = time.perf_counter()    
-    print("Calculating BM25 statistics...")
+    print("\nBM25 STATISTICS...")
 
     statistics = BM25Okapi(chunksTokens)
 
@@ -76,7 +80,7 @@ def index(
     # === SAVING ===
     
     start = time.perf_counter()    
-    print("Saving Index file...")
+    print("\nSAVING INDEX FILE...")
 
     output_directory.mkdir(parents=True, exist_ok=True)
 

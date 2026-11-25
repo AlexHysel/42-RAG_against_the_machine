@@ -79,7 +79,7 @@ class Chunker(BaseModel):
         Parts overlap with the previous ones.
         """
 
-        indices = [m.start() for m in re.finditer(re.escape(delimiter), text)]
+        indices = [m.start() for m in re.finditer(delimiter, text)]
         indices = [0] + indices + [len(text)]
 
         parts = []
