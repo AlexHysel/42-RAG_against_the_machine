@@ -84,10 +84,16 @@ class Chunker(BaseModel):
 
         parts = []
         for i in range(len(indices) - 1):
-            start = max(0, indices[i] - self.overlap_size)
+            start = indices[i]
             end = indices[i + 1]
+            chars_free = self.chunk_size - end + start
+            overlap_start = max(0, start - min(self.overlap_size, chars_free))
             part = text[start:end]
             if part:
-                parts.append((part, start))
+                if not parts or len(parts[-1][0]) + len(part) > self.chunk_size:
+                    overlap = text[overlap_start:start]
+                    parts.append((overlap + part, overlap_start))
+                else:
+                    parts[-1] = (parts[-1][0] + part, parts[-1][1])
 
         return parts
