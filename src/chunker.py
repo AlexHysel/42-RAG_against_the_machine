@@ -23,7 +23,7 @@ class Chunker(BaseModel):
 
     def Chunk(self,
               text: str,
-              delimiters: tuple[str],
+              delimiters: tuple[re.Pattern, ...],
               offset: int = 0,
               ) -> list[Chunk]:
         """Chunk text."""

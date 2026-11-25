@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 class DelimiterConfig(BaseModel):
-    _delimiters: dict[re.Pattern[str], tuple[str, ...]] = PrivateAttr()
+    _delimiters: dict[re.Pattern[str], tuple[re.Pattern, ...]] = PrivateAttr()
 
     def __init__(self, delimiters: dict[str, tuple[str]]):
         super().__init__()
@@ -19,7 +19,7 @@ class DelimiterConfig(BaseModel):
             data = json.load(file)
         return DelimiterConfig(data)
 
-    def get_delimiters_for(self, file_path: Path) -> tuple[str] | None:
+    def get_delimiters_for(self, file_path: Path) -> tuple[re.Pattern, ...] | None:
         """Returns a set of delimiters for file_name."""
 
         for rgx, dels in self._delimiters.items():
