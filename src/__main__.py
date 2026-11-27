@@ -8,6 +8,7 @@ from .chunker import Chunker
 from .chunk import Chunk
 from .delimiter_config import DelimiterConfig
 from .tokenizer import Tokenizer
+from .retriever import Retriever
 
 
 def get_all_files(directory: Path, delimiter_config: DelimiterConfig) -> list[Path]:
@@ -103,16 +104,12 @@ def search(query: str, k: int = 5):
     bm25 = index["bm25"]
     chunks = index["chunks"]
 
-    tokenizer = Tokenizer()
-    tokenized_query = tokenizer.tokenize(query)
+    retriever = Retriever(bm25, chunks)
+    relevant_chunks = retriever.get_relevant_chunks(query, k)
 
-    scores = bm25.get_scores(tokenized_query)
-    top_scores = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:k]
-
-    for i in top_scores:
-        chunk: Chunk = chunks[i]
+    for chunk in relevant_chunks:
         print("\n<====================================================>")
-        print(f"Score: {scores[i]}")
+        #print(f"Score: {scores[i]}")
         print(f"File: {chunk.file_path}: [{chunk.start}..{chunk.end}]")
         print("\n<====== Content =====>\n")
         print(f"{chunk.content}")
