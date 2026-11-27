@@ -5,6 +5,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fire>=0.7.1",
+    "nltk>=3.10.4",
     "pydantic>=2.14.3",
     "pytest>=9.2.0",
     "rank-bm25>=0.2.2",
