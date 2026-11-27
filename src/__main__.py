@@ -94,11 +94,28 @@ def index(
     print("Index file saved to:" / output_directory / f"/index.pkl ({end - start:.4f} sec.)")
 
 
-def search(query: str, k: int = 10):
+def search(query: str, k: int = 5):
     """Search for the most relevant chunks."""
-    # TODO: Load index
-    # TODO: Retrieve top-k results
-    pass
+
+    with open("data/processed/index.pkl", "rb") as index_file:
+        index = pickle.load(index_file)
+
+    bm25 = index["bm25"]
+    chunks = index["chunks"]
+
+    tokenizer = Tokenizer()
+    tokenized_query = tokenizer.tokenize(query)
+
+    scores = bm25.get_scores(tokenized_query)
+    top_scores = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:k]
+
+    for i in top_scores:
+        chunk: Chunk = chunks[i]
+        print("\n<====================================================>")
+        print(f"Score: {scores[i]}")
+        print(f"File: {chunk.file_path}: [{chunk.start}..{chunk.end}]")
+        print("\n<====== Content =====>\n")
+        print(f"{chunk.content}")
 
 
 def search_dataset(
